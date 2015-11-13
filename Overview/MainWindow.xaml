@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Overview"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" MouseDown="MainWindow_MouseDown" Topmost="True" Deactivated="Window_Deactivated">
-    <Grid>
+        Title="MainWindow" Height="100" Width="100">
+    <Canvas Name="MainCanvas">
         
-    </Grid>
+    </Canvas>
 </Window>
