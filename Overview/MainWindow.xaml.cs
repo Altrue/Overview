@@ -80,7 +80,7 @@ namespace Overview
             Rectangle bt_Lock = new Rectangle();
             bt_Lock.Width = 25;
             bt_Lock.Height = 25;
-            bt_Lock.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x44, 0x22, 0x22));
+            bt_Lock.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x22, 0x22));
             bt_Lock.MouseLeftButtonDown += LockButton_MouseDown;
             Canvas.SetTop(bt_Lock, (0));
             Canvas.SetRight(bt_Lock, (0));
