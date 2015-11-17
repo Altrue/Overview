@@ -34,10 +34,11 @@ namespace Overview
 
         // Variables
         private bool isDragMovable = true;
-        PerformanceCounter pc0;
-        PerformanceCounter pc1;
-        PerformanceCounter pc2;
-        PerformanceCounter pc3;
+        private PerformanceCounter[] pcArray = new PerformanceCounter[17];
+        private int tickCounter = 0;
+
+        // UI Elements
+        private TextBlock tbTotal = new TextBlock();
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -95,27 +96,44 @@ namespace Overview
             Canvas.SetLeft(bt_Test, (0));
             MainCanvas.Children.Add(bt_Test);
 
+            // CPU Usage
+            tbTotal.Text = "?";
+            tbTotal.Foreground = new SolidColorBrush(Colors.White);
+            Canvas.SetTop(tbTotal, (50));
+            Canvas.SetLeft(tbTotal, (30));
+            MainCanvas.Children.Add(tbTotal);
+
             // Processor Manager
             var pc = new PerformanceCounter("Processor", "% Processor Time");
             var cat = new PerformanceCounterCategory("Processor");
             var instances = cat.GetInstanceNames();
 
+            int instanceNumber = 0;
+
             foreach (var s in instances)
             {
                 pc.InstanceName = s;
-                Console.WriteLine("instance name is {0}", s);
+                Console.WriteLine("Instance name is {0}", s);
+
+                if (s == "_Total")
+                {
+                    pcArray[0] = new PerformanceCounter("Processor", "% Processor Time", s);
+                }
+                else
+                {
+                    instanceNumber = int.Parse(s) + 1;
+                    pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
+                }
             }
 
-            pc0 = new PerformanceCounter("Processor", "% Processor Time", "0");
-            pc1 = new PerformanceCounter("Processor", "% Processor Time", "1");
-            pc2 = new PerformanceCounter("Processor", "% Processor Time", "2");
-            pc3 = new PerformanceCounter("Processor", "% Processor Time", "3");
-
             // Will return 0 the first time, so better return it now.
-            Console.WriteLine(pc0.NextValue());
-            Console.WriteLine(pc1.NextValue());
-            Console.WriteLine(pc2.NextValue());
-            Console.WriteLine(pc3.NextValue());
+            foreach (PerformanceCounter _pc in pcArray)
+            {
+                if (_pc != null)
+                {
+                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
+                }
+            }
         }
 
         // Timer
@@ -134,6 +152,14 @@ namespace Overview
             {
                 WindowState = WindowState.Normal;
             }
+
+            tickCounter++;
+            if (tickCounter == 5)
+            {
+                // Every second, do something.
+                tbTotal.Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
+                tickCounter = 0;
+            }
         }
 
         // Lock / Unlock
@@ -147,12 +173,16 @@ namespace Overview
         // Test
         public void TestButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine("Click Enregistré");
+            Console.WriteLine("-------------");
+            foreach (PerformanceCounter _pc in pcArray)
+            {
+                if (_pc != null)
+                {
+                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
+                }
+            }
 
-            Console.WriteLine(pc0.NextValue());
-            Console.WriteLine(pc1.NextValue());
-            Console.WriteLine(pc2.NextValue());
-            Console.WriteLine(pc3.NextValue());
+            tbTotal.Text = "CPU Total : " + pcArray[0].NextValue() + "%";
         }
 
         // DragMove
