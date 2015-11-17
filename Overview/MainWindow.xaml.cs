@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,6 +34,10 @@ namespace Overview
 
         // Variables
         private bool isDragMovable = true;
+        PerformanceCounter pc0;
+        PerformanceCounter pc1;
+        PerformanceCounter pc2;
+        PerformanceCounter pc3;
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -59,7 +66,7 @@ namespace Overview
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
 
             // Event assignation
-            MouseDown += MainWindow_MouseDown;
+            MouseLeftButtonDown += MainWindow_MouseDown;
             Loaded += MainWindowLoaded;
 
             // Main Canvas Initialization
@@ -73,10 +80,42 @@ namespace Overview
             bt_Lock.Width = 25;
             bt_Lock.Height = 25;
             bt_Lock.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x44, 0x22, 0x22));
-            bt_Lock.MouseDown += LockButton_MouseDown;
+            bt_Lock.MouseLeftButtonDown += LockButton_MouseDown;
             Canvas.SetTop(bt_Lock, (0));
             Canvas.SetRight(bt_Lock, (0));
             MainCanvas.Children.Add(bt_Lock);
+
+            // Test button
+            Rectangle bt_Test = new Rectangle();
+            bt_Test.Width = 25;
+            bt_Test.Height = 25;
+            bt_Test.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x44, 0x88, 0x99));
+            bt_Test.MouseLeftButtonDown += TestButton_MouseDown;
+            Canvas.SetTop(bt_Test, (0));
+            Canvas.SetLeft(bt_Test, (0));
+            MainCanvas.Children.Add(bt_Test);
+
+            // Processor Manager
+            var pc = new PerformanceCounter("Processor", "% Processor Time");
+            var cat = new PerformanceCounterCategory("Processor");
+            var instances = cat.GetInstanceNames();
+
+            foreach (var s in instances)
+            {
+                pc.InstanceName = s;
+                Console.WriteLine("instance name is {0}", s);
+            }
+
+            pc0 = new PerformanceCounter("Processor", "% Processor Time", "0");
+            pc1 = new PerformanceCounter("Processor", "% Processor Time", "1");
+            pc2 = new PerformanceCounter("Processor", "% Processor Time", "2");
+            pc3 = new PerformanceCounter("Processor", "% Processor Time", "3");
+
+            // Will return 0 the first time, so better return it now.
+            Console.WriteLine(pc0.NextValue());
+            Console.WriteLine(pc1.NextValue());
+            Console.WriteLine(pc2.NextValue());
+            Console.WriteLine(pc3.NextValue());
         }
 
         // Timer
@@ -103,6 +142,17 @@ namespace Overview
             isDragMovable = (isDragMovable == true ? false : true);
             Rectangle bt_Lock = (Rectangle)e.Source;
             bt_Lock.Fill = new SolidColorBrush((isDragMovable == true ? Color.FromArgb(0xFF, 0x88, 0x22, 0x22) : Color.FromArgb(0xFF,0x44, 0x22, 0x22)));
+        }
+
+        // Test
+        public void TestButton_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine("Click Enregistré");
+
+            Console.WriteLine(pc0.NextValue());
+            Console.WriteLine(pc1.NextValue());
+            Console.WriteLine(pc2.NextValue());
+            Console.WriteLine(pc3.NextValue());
         }
 
         // DragMove
