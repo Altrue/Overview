@@ -92,17 +92,17 @@ namespace Overview
             bt_Lock.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/lockopen_mini.png")));
             bt_Lock.MouseLeftButtonDown += LockButton_MouseDown;
             Canvas.SetTop(bt_Lock, (5));
-            Canvas.SetRight(bt_Lock, (6));
+            Canvas.SetLeft(bt_Lock, (6));
             MainCanvas.Children.Add(bt_Lock);
 
             // Test button
             Rectangle bt_Test = new Rectangle();
             bt_Test.Width = 25;
             bt_Test.Height = 25;
-            bt_Test.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x44, 0x88, 0x99));
+            bt_Test.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
             bt_Test.MouseLeftButtonDown += TestButton_MouseDown;
-            Canvas.SetTop(bt_Test, (0));
-            Canvas.SetLeft(bt_Test, (0));
+            Canvas.SetTop(bt_Test, (5));
+            Canvas.SetRight(bt_Test, (6));
             MainCanvas.Children.Add(bt_Test);
 
             // CPU Usage

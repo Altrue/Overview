@@ -105,6 +105,9 @@
     <Resource Include="Ressources\lockopen_mini.png" />
     <Resource Include="Ressources\overviewlogo_mini.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Ressources\exit_mini.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
