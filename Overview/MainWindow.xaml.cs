@@ -38,7 +38,7 @@ namespace Overview
         private int tickCounter = 0;
 
         // UI Elements
-        private TextBlock tbTotal = new TextBlock();
+        private TextBlock[] tbArray = new TextBlock[32];
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -97,11 +97,12 @@ namespace Overview
             MainCanvas.Children.Add(bt_Test);
 
             // CPU Usage
-            tbTotal.Text = "?";
-            tbTotal.Foreground = new SolidColorBrush(Colors.White);
-            Canvas.SetTop(tbTotal, (50));
-            Canvas.SetLeft(tbTotal, (30));
-            MainCanvas.Children.Add(tbTotal);
+            tbArray[0] = new TextBlock();
+            tbArray[0].Text = "?";
+            tbArray[0].Foreground = new SolidColorBrush(Colors.White);
+            Canvas.SetTop(tbArray[0], (50));
+            Canvas.SetLeft(tbArray[0], (30));
+            MainCanvas.Children.Add(tbArray[0]);
 
             // Processor Manager
             var pc = new PerformanceCounter("Processor", "% Processor Time");
@@ -123,6 +124,12 @@ namespace Overview
                 {
                     instanceNumber = int.Parse(s) + 1;
                     pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
+                    tbArray[instanceNumber] = new TextBlock();
+                    tbArray[instanceNumber].Text = "?";
+                    tbArray[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
+                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 50));
+                    Canvas.SetLeft(tbArray[instanceNumber], (30));
+                    MainCanvas.Children.Add(tbArray[instanceNumber]);
                 }
             }
 
@@ -157,7 +164,21 @@ namespace Overview
             if (tickCounter == 5)
             {
                 // Every second, do something.
-                tbTotal.Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
+                foreach (PerformanceCounter _pc in pcArray)
+                {
+                    if (_pc != null)
+                    {
+                        if (_pc.InstanceName != "_Total")
+                        {
+                            int tbArrayNumber = int.Parse(_pc.InstanceName) + 1;
+                            tbArray[tbArrayNumber].Text = _pc.InstanceName + " : " + Math.Truncate(_pc.NextValue()) + " %";
+                        }
+                        else
+                        {
+                            tbArray[0].Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
+                        }
+                    }
+                }
                 tickCounter = 0;
             }
         }
@@ -178,11 +199,17 @@ namespace Overview
             {
                 if (_pc != null)
                 {
-                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
+                    if (_pc.InstanceName != "_Total")
+                    {
+                        int tbArrayNumber = int.Parse(_pc.InstanceName) + 1;
+                        tbArray[tbArrayNumber].Text = _pc.InstanceName + " : " + Math.Truncate(_pc.NextValue()) + " %";
+                    }
+                    else
+                    {
+                        tbArray[0].Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
+                    }
                 }
             }
-
-            tbTotal.Text = "CPU Total : " + pcArray[0].NextValue() + "%";
         }
 
         // DragMove
