@@ -76,14 +76,23 @@ namespace Overview
             MainCanvas.HorizontalAlignment = HorizontalAlignment.Left;
             MainCanvas.VerticalAlignment = VerticalAlignment.Top;
 
+            // Logo
+            Rectangle bt_logo = new Rectangle();
+            bt_logo.Width = 91;
+            bt_logo.Height = 13;
+            bt_logo.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/overviewlogo_mini.png")));
+            Canvas.SetTop(bt_logo, (12));
+            Canvas.SetLeft(bt_logo, (30));
+            MainCanvas.Children.Add(bt_logo);
+
             // Lock button
             Rectangle bt_Lock = new Rectangle();
-            bt_Lock.Width = 25;
-            bt_Lock.Height = 25;
-            bt_Lock.Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x22, 0x22));
+            bt_Lock.Width = 14;
+            bt_Lock.Height = 13;
+            bt_Lock.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/lockopen_mini.png")));
             bt_Lock.MouseLeftButtonDown += LockButton_MouseDown;
-            Canvas.SetTop(bt_Lock, (0));
-            Canvas.SetRight(bt_Lock, (0));
+            Canvas.SetTop(bt_Lock, (5));
+            Canvas.SetRight(bt_Lock, (6));
             MainCanvas.Children.Add(bt_Lock);
 
             // Test button
@@ -189,6 +198,7 @@ namespace Overview
             isDragMovable = (isDragMovable == true ? false : true);
             Rectangle bt_Lock = (Rectangle)e.Source;
             bt_Lock.Fill = new SolidColorBrush((isDragMovable == true ? Color.FromArgb(0xFF, 0x88, 0x22, 0x22) : Color.FromArgb(0xFF,0x44, 0x22, 0x22)));
+            bt_Lock.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/lock" + (isDragMovable == true ? "open" : "closed") + "_mini.png")));
         }
 
         // Test
