@@ -34,6 +34,7 @@ namespace Overview
 
         // Variables
         private bool isDragMovable = true;
+        private bool isClosing = false;
         private PerformanceCounter[] pcArray = new PerformanceCounter[17];
         private int tickCounter = 0;
 
@@ -136,7 +137,7 @@ namespace Overview
                     tbArray[instanceNumber] = new TextBlock();
                     tbArray[instanceNumber].Text = "?";
                     tbArray[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
-                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 50));
+                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 15));
                     Canvas.SetLeft(tbArray[instanceNumber], (30));
                     MainCanvas.Children.Add(tbArray[instanceNumber]);
                 }
@@ -204,6 +205,7 @@ namespace Overview
         // Test
         public void ExitButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            isClosing = true;
             MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Exit Confirmation", MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
@@ -214,7 +216,7 @@ namespace Overview
         // DragMove
         public void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (isDragMovable == true)
+            if (isDragMovable == true && isClosing == false)
             {
                 DragMove();
             }
