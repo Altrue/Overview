@@ -95,15 +95,15 @@ namespace Overview
             Canvas.SetLeft(bt_Lock, (6));
             MainCanvas.Children.Add(bt_Lock);
 
-            // Test button
-            Rectangle bt_Test = new Rectangle();
-            bt_Test.Width = 25;
-            bt_Test.Height = 25;
-            bt_Test.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
-            bt_Test.MouseLeftButtonDown += TestButton_MouseDown;
-            Canvas.SetTop(bt_Test, (5));
-            Canvas.SetRight(bt_Test, (6));
-            MainCanvas.Children.Add(bt_Test);
+            // Exit button
+            Rectangle bt_Exit = new Rectangle();
+            bt_Exit.Width = 14;
+            bt_Exit.Height = 14;
+            bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
+            bt_Exit.MouseLeftButtonDown += ExitButton_MouseDown;
+            Canvas.SetTop(bt_Exit, (5));
+            Canvas.SetRight(bt_Exit, (6));
+            MainCanvas.Children.Add(bt_Exit);
 
             // CPU Usage
             tbArray[0] = new TextBlock();
@@ -202,23 +202,12 @@ namespace Overview
         }
 
         // Test
-        public void TestButton_MouseDown(object sender, MouseButtonEventArgs e)
+        public void ExitButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine("-------------");
-            foreach (PerformanceCounter _pc in pcArray)
+            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Exit Confirmation", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
             {
-                if (_pc != null)
-                {
-                    if (_pc.InstanceName != "_Total")
-                    {
-                        int tbArrayNumber = int.Parse(_pc.InstanceName) + 1;
-                        tbArray[tbArrayNumber].Text = _pc.InstanceName + " : " + Math.Truncate(_pc.NextValue()) + " %";
-                    }
-                    else
-                    {
-                        tbArray[0].Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
-                    }
-                }
+                Application.Current.Shutdown();
             }
         }
 
