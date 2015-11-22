@@ -211,6 +211,10 @@ namespace Overview
             {
                 Application.Current.Shutdown();
             }
+            else
+            {
+                isClosing = false;
+            }
         }
 
         // DragMove
