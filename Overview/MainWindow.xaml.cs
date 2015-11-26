@@ -19,6 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+
 namespace Overview
 {
     public partial class MainWindow : Window
@@ -40,6 +41,7 @@ namespace Overview
 
         // UI Elements
         private TextBlock[] tbArray = new TextBlock[32];
+        Canvas CPUGraphCanvas = new Canvas();
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -74,8 +76,8 @@ namespace Overview
             // Main Canvas Initialization
             MainCanvas.Width = WINDOW_WIDTH;
             MainCanvas.Height = WINDOW_HEIGHT;
-            MainCanvas.HorizontalAlignment = HorizontalAlignment.Left;
-            MainCanvas.VerticalAlignment = VerticalAlignment.Top;
+            MainCanvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            MainCanvas.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
             // Logo
             Rectangle bt_logo = new Rectangle();
@@ -113,6 +115,98 @@ namespace Overview
             Canvas.SetTop(tbArray[0], (50));
             Canvas.SetLeft(tbArray[0], (30));
             MainCanvas.Children.Add(tbArray[0]);
+
+            //
+            // --- GRAPH STUFF ---
+            //
+
+            CPUGraphCanvas.Width = 140;
+            CPUGraphCanvas.Height = 40;
+            CPUGraphCanvas.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
+
+            Canvas.SetTop(CPUGraphCanvas, (150));
+            Canvas.SetLeft(CPUGraphCanvas, (5));
+            MainCanvas.Children.Add(CPUGraphCanvas);
+
+            Border BorderCPUGraphCanvas = new Border();
+            BorderCPUGraphCanvas.Width = CPUGraphCanvas.Width + 2;
+            BorderCPUGraphCanvas.Height = CPUGraphCanvas.Height + 2;
+            BorderCPUGraphCanvas.BorderThickness = new Thickness(1);
+            BorderCPUGraphCanvas.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x55, 0x55, 0x55));
+            Canvas.SetTop(BorderCPUGraphCanvas, (149));
+            Canvas.SetLeft(BorderCPUGraphCanvas, (4));
+            MainCanvas.Children.Add(BorderCPUGraphCanvas);
+
+            double xmin = 0;
+            double xmax = CPUGraphCanvas.Width;
+            double ymin = 0;
+            double ymax = CPUGraphCanvas.Height;
+            const double step = 10;
+
+            // Make the X axis.
+            GeometryGroup xaxis_geom = new GeometryGroup();
+            for (double x = xmin + step;
+                x <= CPUGraphCanvas.Width - step; x += step)
+            {
+                xaxis_geom.Children.Add(new LineGeometry(
+                    new Point(x, 0),
+                    new Point(x, ymax)));
+            }
+
+            Path xaxis_path = new Path();
+            xaxis_path.StrokeThickness = 1;
+            xaxis_path.Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+            xaxis_path.Data = xaxis_geom;
+            xaxis_path.SnapsToDevicePixels = true;
+            xaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
+
+            CPUGraphCanvas.Children.Add(xaxis_path);
+
+            // Make the Y ayis.
+            GeometryGroup yaxis_geom = new GeometryGroup();
+            for (double y = step; y <= CPUGraphCanvas.Height - step; y += step)
+            {
+                yaxis_geom.Children.Add(new LineGeometry(
+                    new Point(0, y),
+                    new Point(xmax, y)));
+            }
+
+            Path yaxis_path = new Path();
+            yaxis_path.StrokeThickness = 1;
+            yaxis_path.Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+            yaxis_path.Data = yaxis_geom;
+            yaxis_path.SnapsToDevicePixels = true;
+            yaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
+
+            CPUGraphCanvas.Children.Add(yaxis_path);
+
+            // Make some data sets.
+            Brush[] brushes = { Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue };
+            Random rand = new Random();
+            for (int data_set = 0; data_set < 3; data_set++)
+            {
+                int last_y = rand.Next((int)ymin, (int)ymax);
+
+                PointCollection points = new PointCollection();
+                for (double x = xmin; x <= xmax; x += step)
+                {
+                    last_y = rand.Next(last_y - 10, last_y + 10);
+                    if (last_y < ymin) last_y = (int)ymin;
+                    if (last_y > ymax) last_y = (int)ymax;
+                    points.Add(new Point(x, last_y));
+                }
+
+                Polyline polyline = new Polyline();
+                polyline.StrokeThickness = 1;
+                polyline.Stroke = brushes[data_set];
+                polyline.Points = points;
+
+                CPUGraphCanvas.Children.Add(polyline);
+            }
+
+            //
+            // --- END OF GRAPH STUFF ---
+            //
 
             // Processor Manager
             var pc = new PerformanceCounter("Processor", "% Processor Time");
