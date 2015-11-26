@@ -39,13 +39,19 @@ namespace Overview
         private PerformanceCounter[] pcArray = new PerformanceCounter[17];
         private int tickCounter = 0;
         public int coreNumber = 0;
+        private double xmax = 140;
+        private double ymax = 40;
+        private double step = 10;
+        private double graphStep = 2;
 
         // UI Elements
         private TextBlock[] tbArray = new TextBlock[32];
         private Canvas CPUGraphCanvas = new Canvas();
+        private Brush[] brushes = { Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue, Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue, Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue };
 
-        // CoreData
+        // Dictionaries
         public Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
+        public Dictionary<Int16, Polyline> CPUPolyLines = new Dictionary<Int16, Polyline>();
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -120,15 +126,69 @@ namespace Overview
             Canvas.SetLeft(tbArray[0], (30));
             MainCanvas.Children.Add(tbArray[0]);
 
+            // Processor Manager
+            var pc = new PerformanceCounter("Processor", "% Processor Time");
+            var cat = new PerformanceCounterCategory("Processor");
+            var instances = cat.GetInstanceNames();
+
+            int instanceNumber = 0;
+            short instanceNumber2 = 0;
+
+            foreach (var s in instances)
+            {
+                pc.InstanceName = s;
+                Console.WriteLine("Instance name is {0}", s);
+                
+
+                if (s == "_Total")
+                {
+                    pcArray[0] = new PerformanceCounter("Processor", "% Processor Time", s);
+                }
+                else
+                {
+                    coreNumber++;
+
+                    instanceNumber = int.Parse(s) + 1;
+                    instanceNumber2 = (short)instanceNumber;
+
+                    CoreData[instanceNumber2] = new List<int>();
+                    CPUPolyLines[instanceNumber2] = new Polyline();
+
+                    for (int i = 0; i < 70; i++)
+                    {
+                        CoreData[instanceNumber2].Add(0);
+                    }
+
+                    pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
+                    tbArray[instanceNumber] = new TextBlock();
+                    tbArray[instanceNumber].Text = "?";
+                    tbArray[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
+                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 15));
+                    Canvas.SetLeft(tbArray[instanceNumber], (30));
+                    MainCanvas.Children.Add(tbArray[instanceNumber]);
+                }
+            }
+
+            // Will return 0 the first time, so better return it now.
+            foreach (PerformanceCounter _pc in pcArray)
+            {
+                if (_pc != null)
+                {
+                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
+                }
+            }
+
             //
             // --- GRAPH STUFF ---
             //
+
+            int CPUGraphTopSpacing = coreNumber * 15 + 70;
 
             CPUGraphCanvas.Width = 140;
             CPUGraphCanvas.Height = 40;
             CPUGraphCanvas.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
 
-            Canvas.SetTop(CPUGraphCanvas, (150));
+            Canvas.SetTop(CPUGraphCanvas, (CPUGraphTopSpacing));
             Canvas.SetLeft(CPUGraphCanvas, (5));
             MainCanvas.Children.Add(CPUGraphCanvas);
 
@@ -137,19 +197,13 @@ namespace Overview
             BorderCPUGraphCanvas.Height = CPUGraphCanvas.Height + 2;
             BorderCPUGraphCanvas.BorderThickness = new Thickness(1);
             BorderCPUGraphCanvas.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x55, 0x55, 0x55));
-            Canvas.SetTop(BorderCPUGraphCanvas, (149));
+            Canvas.SetTop(BorderCPUGraphCanvas, (CPUGraphTopSpacing - 1));
             Canvas.SetLeft(BorderCPUGraphCanvas, (4));
             MainCanvas.Children.Add(BorderCPUGraphCanvas);
 
-            double xmin = 0;
-            double xmax = CPUGraphCanvas.Width;
-            double ymin = 0;
-            double ymax = CPUGraphCanvas.Height;
-            const double step = 10;
-
             // Make the X axis.
             GeometryGroup xaxis_geom = new GeometryGroup();
-            for (double x = xmin + step;
+            for (double x = 0 + step;
                 x <= CPUGraphCanvas.Width - step; x += step)
             {
                 xaxis_geom.Children.Add(new LineGeometry(
@@ -184,84 +238,9 @@ namespace Overview
 
             CPUGraphCanvas.Children.Add(yaxis_path);
 
-            // Make some data sets.
-            Brush[] brushes = { Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue };
-            Random rand = new Random();
-            for (int data_set = 0; data_set < 3; data_set++)
-            {
-                int last_y = rand.Next((int)ymin, (int)ymax);
-
-                PointCollection points = new PointCollection();
-                for (double x = xmin; x <= xmax; x += step)
-                {
-                    last_y = rand.Next(last_y - 10, last_y + 10);
-                    if (last_y < ymin) last_y = (int)ymin;
-                    if (last_y > ymax) last_y = (int)ymax;
-                    points.Add(new Point(x, last_y));
-                }
-
-                Polyline polyline = new Polyline();
-                polyline.StrokeThickness = 1;
-                polyline.Stroke = brushes[data_set];
-                polyline.Points = points;
-
-                CPUGraphCanvas.Children.Add(polyline);
-            }
-
             //
             // --- END OF GRAPH STUFF ---
             //
-
-            // Processor Manager
-            var pc = new PerformanceCounter("Processor", "% Processor Time");
-            var cat = new PerformanceCounterCategory("Processor");
-            var instances = cat.GetInstanceNames();
-
-            int instanceNumber = 0;
-            short instanceNumber2 = 0;
-
-            foreach (var s in instances)
-            {
-                pc.InstanceName = s;
-                Console.WriteLine("Instance name is {0}", s);
-                
-
-                if (s == "_Total")
-                {
-                    pcArray[0] = new PerformanceCounter("Processor", "% Processor Time", s);
-                }
-                else
-                {
-                    coreNumber++;
-
-                    instanceNumber = int.Parse(s) + 1;
-                    instanceNumber2 = (short)instanceNumber;
-
-                    CoreData[instanceNumber2] = new List<int>();
-
-                    for (int i = 0; i < 70; i++)
-                    {
-                        CoreData[instanceNumber2].Add(0);
-                    }
-
-                    pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
-                    tbArray[instanceNumber] = new TextBlock();
-                    tbArray[instanceNumber].Text = "?";
-                    tbArray[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
-                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 15));
-                    Canvas.SetLeft(tbArray[instanceNumber], (30));
-                    MainCanvas.Children.Add(tbArray[instanceNumber]);
-                }
-            }
-
-            // Will return 0 the first time, so better return it now.
-            foreach (PerformanceCounter _pc in pcArray)
-            {
-                if (_pc != null)
-                {
-                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
-                }
-            }
         }
 
         // Timer
@@ -310,6 +289,27 @@ namespace Overview
                         }
                     }
                 }
+
+                // Re-draw the data
+                for (short CoreN = 1; CoreN <= coreNumber; CoreN++)
+                {
+                    PointCollection points = new PointCollection();
+                    double x = xmax;
+                    for (int DataIndex = 0; DataIndex < 70; DataIndex++)
+                    {
+                        int CPUValue = 40 - (int)Math.Round((CoreData[CoreN][DataIndex]) * 0.4);
+                        points.Add(new Point(x, CPUValue));
+                        x -= graphStep;
+                    }
+
+                    CPUPolyLines[CoreN].StrokeThickness = 1;
+                    CPUPolyLines[CoreN].Stroke = brushes[CoreN];
+                    CPUPolyLines[CoreN].Points = points;
+
+                    CPUGraphCanvas.Children.Remove(CPUPolyLines[CoreN]);
+                    CPUGraphCanvas.Children.Add(CPUPolyLines[CoreN]);
+                }
+
                 tickCounter = 0;
             }
         }
