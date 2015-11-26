@@ -238,6 +238,12 @@ namespace Overview
                     instanceNumber2 = (short)instanceNumber;
 
                     CoreData[instanceNumber2] = new List<int>();
+
+                    for (int i = 0; i < 70; i++)
+                    {
+                        CoreData[instanceNumber2].Add(0);
+                    }
+
                     pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
                     tbArray[instanceNumber] = new TextBlock();
                     tbArray[instanceNumber].Text = "?";
@@ -286,7 +292,17 @@ namespace Overview
                         if (_pc.InstanceName != "_Total")
                         {
                             int tbArrayNumber = int.Parse(_pc.InstanceName) + 1;
-                            tbArray[tbArrayNumber].Text = _pc.InstanceName + " : " + Math.Truncate(_pc.NextValue()) + " %";
+                            short shorttbArrayNumber = (short)tbArrayNumber;
+                            int _nextvalue = (int)Math.Truncate(_pc.NextValue());
+                            int _instancename = tbArrayNumber - 1;
+                            int listCount = CoreData[shorttbArrayNumber].Count();
+                            tbArray[tbArrayNumber].Text = _instancename + " : " + _nextvalue + " %";
+
+                            CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
+                            if (listCount > 69)
+                            {
+                                CoreData[shorttbArrayNumber].RemoveAt(listCount - 1);
+                            }
                         }
                         else
                         {
