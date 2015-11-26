@@ -38,10 +38,14 @@ namespace Overview
         private bool isClosing = false;
         private PerformanceCounter[] pcArray = new PerformanceCounter[17];
         private int tickCounter = 0;
+        public int coreNumber = 0;
 
         // UI Elements
         private TextBlock[] tbArray = new TextBlock[32];
-        Canvas CPUGraphCanvas = new Canvas();
+        private Canvas CPUGraphCanvas = new Canvas();
+
+        // CoreData
+        public Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -214,11 +218,13 @@ namespace Overview
             var instances = cat.GetInstanceNames();
 
             int instanceNumber = 0;
+            short instanceNumber2 = 0;
 
             foreach (var s in instances)
             {
                 pc.InstanceName = s;
                 Console.WriteLine("Instance name is {0}", s);
+                
 
                 if (s == "_Total")
                 {
@@ -226,7 +232,12 @@ namespace Overview
                 }
                 else
                 {
+                    coreNumber++;
+
                     instanceNumber = int.Parse(s) + 1;
+                    instanceNumber2 = (short)instanceNumber;
+
+                    CoreData[instanceNumber2] = new List<int>();
                     pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
                     tbArray[instanceNumber] = new TextBlock();
                     tbArray[instanceNumber].Text = "?";
