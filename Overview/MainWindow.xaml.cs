@@ -37,7 +37,7 @@ namespace Overview
         private bool isDragMovable = true;
         private bool isClosing = false;
         private PerformanceCounter[] pcArray = new PerformanceCounter[17];
-        private int tickCounter = 0;
+        private int tickCounter = 4;
         public int coreNumber = 0;
         private double xmax = 140;
         private double ymax = 40;
@@ -154,9 +154,10 @@ namespace Overview
                     CoreData[instanceNumber2] = new List<int>();
                     CPUPolyLines[instanceNumber2] = new Polyline();
 
-                    for (int i = 0; i < 70; i++)
+                    CoreData[instanceNumber2].Add(0);
+                    for (int i = 0; i < 69; i++)
                     {
-                        CoreData[instanceNumber2].Add(0);
+                        CoreData[instanceNumber2].Add(-1);
                     }
 
                     pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
@@ -275,7 +276,7 @@ namespace Overview
                             int _nextvalue = (int)Math.Truncate(_pc.NextValue());
                             int _instancename = tbArrayNumber - 1;
                             int listCount = CoreData[shorttbArrayNumber].Count();
-                            tbArray[tbArrayNumber].Text = _instancename + " : " + _nextvalue + " %";
+                            tbArray[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
 
                             CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
                             if (listCount > 69)
@@ -297,8 +298,12 @@ namespace Overview
                     double x = xmax;
                     for (int DataIndex = 0; DataIndex < 70; DataIndex++)
                     {
-                        int CPUValue = 40 - (int)Math.Round((CoreData[CoreN][DataIndex]) * 0.4);
-                        points.Add(new Point(x, CPUValue));
+                        double rawYValue = CoreData[CoreN][DataIndex];
+                        if (rawYValue >= 0)
+                        {
+                            int CPUValue = 40 - (int)Math.Round((rawYValue) * 0.4);
+                            points.Add(new Point(x, CPUValue));
+                        }
                         x -= graphStep;
                     }
 
