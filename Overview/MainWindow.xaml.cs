@@ -47,7 +47,7 @@ namespace Overview
         // UI Elements
         private TextBlock[] tbArray = new TextBlock[32];
         private Canvas CPUGraphCanvas = new Canvas();
-        private Brush[] brushes = { Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue, Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue, Brushes.OrangeRed, Brushes.LightGreen, Brushes.LightBlue };
+        private Brush[] brushes = { Brushes.IndianRed, Brushes.OrangeRed, Brushes.LightGoldenrodYellow, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink };
 
         // Dictionaries
         public Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
@@ -155,7 +155,7 @@ namespace Overview
                     CPUPolyLines[instanceNumber2] = new Polyline();
 
                     CoreData[instanceNumber2].Add(0);
-                    for (int i = 0; i < 69; i++)
+                    for (int i = 0; i < 71; i++)
                     {
                         CoreData[instanceNumber2].Add(-1);
                     }
@@ -279,7 +279,7 @@ namespace Overview
                             tbArray[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
 
                             CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
-                            if (listCount > 69)
+                            if (listCount > 71)
                             {
                                 CoreData[shorttbArrayNumber].RemoveAt(listCount - 1);
                             }
@@ -296,7 +296,7 @@ namespace Overview
                 {
                     PointCollection points = new PointCollection();
                     double x = xmax;
-                    for (int DataIndex = 0; DataIndex < 70; DataIndex++)
+                    for (int DataIndex = 0; DataIndex < 72; DataIndex++)
                     {
                         double rawYValue = CoreData[CoreN][DataIndex];
                         if (rawYValue >= 0)
