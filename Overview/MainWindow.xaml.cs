@@ -47,7 +47,7 @@ namespace Overview
         // UI Elements
         private TextBlock[] tbArray = new TextBlock[32];
         private Canvas CPUGraphCanvas = new Canvas();
-        private Brush[] brushes = { Brushes.IndianRed, Brushes.OrangeRed, Brushes.LightGoldenrodYellow, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink };
+        private Brush[] brushes = { Brushes.Black, Brushes.IndianRed, Brushes.OrangeRed, Brushes.Gold, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink };
 
         // Dictionaries
         public Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
@@ -192,6 +192,15 @@ namespace Overview
             Canvas.SetTop(CPUGraphCanvas, (CPUGraphTopSpacing));
             Canvas.SetLeft(CPUGraphCanvas, (5));
             MainCanvas.Children.Add(CPUGraphCanvas);
+
+            Border BorderCPUGraphCanvas2 = new Border();
+            BorderCPUGraphCanvas2.Width = CPUGraphCanvas.Width + 10;
+            BorderCPUGraphCanvas2.Height = CPUGraphCanvas.Height + 10;
+            BorderCPUGraphCanvas2.BorderThickness = new Thickness(4);
+            BorderCPUGraphCanvas2.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
+            Canvas.SetTop(BorderCPUGraphCanvas2, (CPUGraphTopSpacing - 5));
+            Canvas.SetLeft(BorderCPUGraphCanvas2, (0));
+            MainCanvas.Children.Add(BorderCPUGraphCanvas2);
 
             Border BorderCPUGraphCanvas = new Border();
             BorderCPUGraphCanvas.Width = CPUGraphCanvas.Width + 2;
