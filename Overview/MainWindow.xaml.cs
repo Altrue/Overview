@@ -101,7 +101,7 @@ namespace Overview
             GD.tbArrayCPU[0].Text = "?";
             GD.tbArrayCPU[0].Foreground = new SolidColorBrush(Colors.White);
             Canvas.SetTop(GD.tbArrayCPU[0], (50));
-            Canvas.SetLeft(GD.tbArrayCPU[0], (30));
+            Canvas.SetLeft(GD.tbArrayCPU[0], (5));
             GD.MainCanvas.Children.Add(GD.tbArrayCPU[0]);
 
             // Build the Processor Manager
@@ -167,7 +167,7 @@ namespace Overview
                         }
                         else
                         {
-                            GD.tbArrayCPU[0].Text = "CPU Total : " + Math.Truncate(GD.pcArrayCPU[0].NextValue()) + "%";
+                            GD.tbArrayCPU[0].Text = "Total : " + Math.Truncate(GD.pcArrayCPU[0].NextValue()) + "%";
                         }
                     }
                 }

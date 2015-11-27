@@ -87,7 +87,7 @@ namespace Overview
                     GD.tbArrayCPU[instanceNumber].Text = "?";
                     GD.tbArrayCPU[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
                     Canvas.SetTop(GD.tbArrayCPU[instanceNumber], (50 + instanceNumber * 15));
-                    Canvas.SetLeft(GD.tbArrayCPU[instanceNumber], (30));
+                    Canvas.SetLeft(GD.tbArrayCPU[instanceNumber], (5));
                     GD.MainCanvas.Children.Add(GD.tbArrayCPU[instanceNumber]);
                 }
             }
