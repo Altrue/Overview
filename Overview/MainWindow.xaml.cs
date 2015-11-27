@@ -24,34 +24,14 @@ namespace Overview
 {
     public partial class MainWindow : Window
     {
-        // ===============================
-        // DEBUG MODE CONTROL
-        public const bool DEBUGMODE = false;
-        // ===============================
-
-        // Constants
-        private const int WINDOW_WIDTH = 150;           // in pixels
-        private const int WINDOW_HEIGHT = 400;          // in pixels
-
         // Variables
         private bool isDragMovable = true;
         private bool isClosing = false;
-        private PerformanceCounter[] pcArray = new PerformanceCounter[17];
         private int tickCounter = 4;
-        public int coreNumber = 0;
         private double xmax = 140;
         private double ymax = 40;
         private double step = 10;
         private double graphStep = 2;
-
-        // UI Elements
-        private TextBlock[] tbArray = new TextBlock[32];
-        private Canvas CPUGraphCanvas = new Canvas();
-        private Brush[] brushes = { Brushes.Black, Brushes.IndianRed, Brushes.OrangeRed, Brushes.Gold, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink };
-
-        // Dictionaries
-        public Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
-        public Dictionary<Int16, Polyline> CPUPolyLines = new Dictionary<Int16, Polyline>();
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -73,8 +53,8 @@ namespace Overview
 
             // Initialization
             InitializeComponent();
-            Width = WINDOW_WIDTH;
-            Height = WINDOW_HEIGHT;
+            Width = GD.WINDOW_WIDTH;
+            Height = GD.WINDOW_HEIGHT;
             ResizeMode = ResizeMode.CanMinimize;
             WindowStyle = WindowStyle.None;
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
@@ -84,10 +64,11 @@ namespace Overview
             Loaded += MainWindowLoaded;
 
             // Main Canvas Initialization
-            MainCanvas.Width = WINDOW_WIDTH;
-            MainCanvas.Height = WINDOW_HEIGHT;
-            MainCanvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            MainCanvas.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            AddChild(GD.MainCanvas);
+            GD.MainCanvas.Width = GD.WINDOW_WIDTH;
+            GD.MainCanvas.Height = GD.WINDOW_HEIGHT;
+            GD.MainCanvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            GD.MainCanvas.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
             // Logo
             Rectangle bt_logo = new Rectangle();
@@ -96,7 +77,7 @@ namespace Overview
             bt_logo.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/overviewlogo_mini.png")));
             Canvas.SetTop(bt_logo, (12));
             Canvas.SetLeft(bt_logo, (30));
-            MainCanvas.Children.Add(bt_logo);
+            GD.MainCanvas.Children.Add(bt_logo);
 
             // Lock button
             Rectangle bt_Lock = new Rectangle();
@@ -106,7 +87,7 @@ namespace Overview
             bt_Lock.MouseLeftButtonDown += LockButton_MouseDown;
             Canvas.SetTop(bt_Lock, (5));
             Canvas.SetLeft(bt_Lock, (6));
-            MainCanvas.Children.Add(bt_Lock);
+            GD.MainCanvas.Children.Add(bt_Lock);
 
             // Exit button
             Rectangle bt_Exit = new Rectangle();
@@ -116,105 +97,55 @@ namespace Overview
             bt_Exit.MouseLeftButtonDown += ExitButton_MouseDown;
             Canvas.SetTop(bt_Exit, (5));
             Canvas.SetRight(bt_Exit, (6));
-            MainCanvas.Children.Add(bt_Exit);
+            GD.MainCanvas.Children.Add(bt_Exit);
 
             // CPU Usage
-            tbArray[0] = new TextBlock();
-            tbArray[0].Text = "?";
-            tbArray[0].Foreground = new SolidColorBrush(Colors.White);
-            Canvas.SetTop(tbArray[0], (50));
-            Canvas.SetLeft(tbArray[0], (30));
-            MainCanvas.Children.Add(tbArray[0]);
+            GD.tbArrayCPU[0] = new TextBlock();
+            GD.tbArrayCPU[0].Text = "?";
+            GD.tbArrayCPU[0].Foreground = new SolidColorBrush(Colors.White);
+            Canvas.SetTop(GD.tbArrayCPU[0], (50));
+            Canvas.SetLeft(GD.tbArrayCPU[0], (30));
+            GD.MainCanvas.Children.Add(GD.tbArrayCPU[0]);
 
-            // Processor Manager
-            var pc = new PerformanceCounter("Processor", "% Processor Time");
-            var cat = new PerformanceCounterCategory("Processor");
-            var instances = cat.GetInstanceNames();
-
-            int instanceNumber = 0;
-            short instanceNumber2 = 0;
-
-            foreach (var s in instances)
-            {
-                pc.InstanceName = s;
-                Console.WriteLine("Instance name is {0}", s);
-                
-
-                if (s == "_Total")
-                {
-                    pcArray[0] = new PerformanceCounter("Processor", "% Processor Time", s);
-                }
-                else
-                {
-                    coreNumber++;
-
-                    instanceNumber = int.Parse(s) + 1;
-                    instanceNumber2 = (short)instanceNumber;
-
-                    CoreData[instanceNumber2] = new List<int>();
-                    CPUPolyLines[instanceNumber2] = new Polyline();
-
-                    CoreData[instanceNumber2].Add(0);
-                    for (int i = 0; i < 71; i++)
-                    {
-                        CoreData[instanceNumber2].Add(-1);
-                    }
-
-                    pcArray[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
-                    tbArray[instanceNumber] = new TextBlock();
-                    tbArray[instanceNumber].Text = "?";
-                    tbArray[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
-                    Canvas.SetTop(tbArray[instanceNumber], (50 + instanceNumber * 15));
-                    Canvas.SetLeft(tbArray[instanceNumber], (30));
-                    MainCanvas.Children.Add(tbArray[instanceNumber]);
-                }
-            }
-
-            // Will return 0 the first time, so better return it now.
-            foreach (PerformanceCounter _pc in pcArray)
-            {
-                if (_pc != null)
-                {
-                    Console.WriteLine(_pc.InstanceName + " : " + _pc.NextValue());
-                }
-            }
+            // Build the Processor Manager
+            ProcessorManager PM = new ProcessorManager();
 
             //
             // --- GRAPH STUFF ---
             //
 
-            int CPUGraphTopSpacing = coreNumber * 15 + 70;
+            int CPUGraphTopSpacing = GD.coreNumber * 15 + 70;
 
-            CPUGraphCanvas.Width = 140;
-            CPUGraphCanvas.Height = 40;
-            CPUGraphCanvas.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
+            GD.GraphCanvasCPU.Width = 140;
+            GD.GraphCanvasCPU.Height = 40;
+            GD.GraphCanvasCPU.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
 
-            Canvas.SetTop(CPUGraphCanvas, (CPUGraphTopSpacing));
-            Canvas.SetLeft(CPUGraphCanvas, (5));
-            MainCanvas.Children.Add(CPUGraphCanvas);
+            Canvas.SetTop(GD.GraphCanvasCPU, (CPUGraphTopSpacing));
+            Canvas.SetLeft(GD.GraphCanvasCPU, (5));
+            GD.MainCanvas.Children.Add(GD.GraphCanvasCPU);
 
             Border BorderCPUGraphCanvas2 = new Border();
-            BorderCPUGraphCanvas2.Width = CPUGraphCanvas.Width + 10;
-            BorderCPUGraphCanvas2.Height = CPUGraphCanvas.Height + 10;
+            BorderCPUGraphCanvas2.Width = GD.GraphCanvasCPU.Width + 10;
+            BorderCPUGraphCanvas2.Height = GD.GraphCanvasCPU.Height + 10;
             BorderCPUGraphCanvas2.BorderThickness = new Thickness(4);
             BorderCPUGraphCanvas2.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
             Canvas.SetTop(BorderCPUGraphCanvas2, (CPUGraphTopSpacing - 5));
             Canvas.SetLeft(BorderCPUGraphCanvas2, (0));
-            MainCanvas.Children.Add(BorderCPUGraphCanvas2);
+            GD.MainCanvas.Children.Add(BorderCPUGraphCanvas2);
 
             Border BorderCPUGraphCanvas = new Border();
-            BorderCPUGraphCanvas.Width = CPUGraphCanvas.Width + 2;
-            BorderCPUGraphCanvas.Height = CPUGraphCanvas.Height + 2;
+            BorderCPUGraphCanvas.Width = GD.GraphCanvasCPU.Width + 2;
+            BorderCPUGraphCanvas.Height = GD.GraphCanvasCPU.Height + 2;
             BorderCPUGraphCanvas.BorderThickness = new Thickness(1);
             BorderCPUGraphCanvas.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x55, 0x55, 0x55));
             Canvas.SetTop(BorderCPUGraphCanvas, (CPUGraphTopSpacing - 1));
             Canvas.SetLeft(BorderCPUGraphCanvas, (4));
-            MainCanvas.Children.Add(BorderCPUGraphCanvas);
+            GD.MainCanvas.Children.Add(BorderCPUGraphCanvas);
 
             // Make the X axis.
             GeometryGroup xaxis_geom = new GeometryGroup();
             for (double x = 0 + step;
-                x <= CPUGraphCanvas.Width - step; x += step)
+                x <= GD.GraphCanvasCPU.Width - step; x += step)
             {
                 xaxis_geom.Children.Add(new LineGeometry(
                     new Point(x, 0),
@@ -228,11 +159,11 @@ namespace Overview
             xaxis_path.SnapsToDevicePixels = true;
             xaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
 
-            CPUGraphCanvas.Children.Add(xaxis_path);
+            GD.GraphCanvasCPU.Children.Add(xaxis_path);
 
             // Make the Y ayis.
             GeometryGroup yaxis_geom = new GeometryGroup();
-            for (double y = step; y <= CPUGraphCanvas.Height - step; y += step)
+            for (double y = step; y <= GD.GraphCanvasCPU.Height - step; y += step)
             {
                 yaxis_geom.Children.Add(new LineGeometry(
                     new Point(0, y),
@@ -246,7 +177,7 @@ namespace Overview
             yaxis_path.SnapsToDevicePixels = true;
             yaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
 
-            CPUGraphCanvas.Children.Add(yaxis_path);
+            GD.GraphCanvasCPU.Children.Add(yaxis_path);
 
             //
             // --- END OF GRAPH STUFF ---
@@ -274,40 +205,40 @@ namespace Overview
             if (tickCounter == 5)
             {
                 // Every second, do something.
-                foreach (PerformanceCounter _pc in pcArray)
+                foreach (PerformanceCounter _pc in GD.pcArrayCPU)
                 {
                     if (_pc != null)
                     {
                         if (_pc.InstanceName != "_Total")
                         {
                             int tbArrayNumber = int.Parse(_pc.InstanceName) + 1;
-                            short shorttbArrayNumber = (short)tbArrayNumber;
+                            short shorttbArrayNumber = (short)(tbArrayNumber - 1);
                             int _nextvalue = (int)Math.Truncate(_pc.NextValue());
                             int _instancename = tbArrayNumber - 1;
-                            int listCount = CoreData[shorttbArrayNumber].Count();
-                            tbArray[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
+                            int listCount = GD.CoreData[shorttbArrayNumber].Count();
+                            GD.tbArrayCPU[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
 
-                            CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
+                            GD.CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
                             if (listCount > 71)
                             {
-                                CoreData[shorttbArrayNumber].RemoveAt(listCount - 1);
+                                GD.CoreData[shorttbArrayNumber].RemoveAt(listCount - 1);
                             }
                         }
                         else
                         {
-                            tbArray[0].Text = "CPU Total : " + Math.Truncate(pcArray[0].NextValue()) + "%";
+                            GD.tbArrayCPU[0].Text = "CPU Total : " + Math.Truncate(GD.pcArrayCPU[0].NextValue()) + "%";
                         }
                     }
                 }
 
                 // Re-draw the data
-                for (short CoreN = 1; CoreN <= coreNumber; CoreN++)
+                for (short cpuNumber = 0; cpuNumber < GD.coreNumber; cpuNumber++)
                 {
                     PointCollection points = new PointCollection();
                     double x = xmax;
                     for (int DataIndex = 0; DataIndex < 72; DataIndex++)
                     {
-                        double rawYValue = CoreData[CoreN][DataIndex];
+                        double rawYValue = GD.CoreData[cpuNumber][DataIndex];
                         if (rawYValue >= 0)
                         {
                             int CPUValue = 40 - (int)Math.Round((rawYValue) * 0.4);
@@ -316,12 +247,12 @@ namespace Overview
                         x -= graphStep;
                     }
 
-                    CPUPolyLines[CoreN].StrokeThickness = 1;
-                    CPUPolyLines[CoreN].Stroke = brushes[CoreN];
-                    CPUPolyLines[CoreN].Points = points;
+                    GD.CPUPolyLines[cpuNumber].StrokeThickness = 1;
+                    GD.CPUPolyLines[cpuNumber].Stroke = GD.brushes[cpuNumber];
+                    GD.CPUPolyLines[cpuNumber].Points = points;
 
-                    CPUGraphCanvas.Children.Remove(CPUPolyLines[CoreN]);
-                    CPUGraphCanvas.Children.Add(CPUPolyLines[CoreN]);
+                    GD.GraphCanvasCPU.Children.Remove(GD.CPUPolyLines[cpuNumber]);
+                    GD.GraphCanvasCPU.Children.Add(GD.CPUPolyLines[cpuNumber]);
                 }
 
                 tickCounter = 0;

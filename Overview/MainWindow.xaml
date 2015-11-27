@@ -6,7 +6,4 @@
         xmlns:local="clr-namespace:Overview"
         mc:Ignorable="d"
         Title="MainWindow" Height="100" Width="100">
-    <Canvas Name="MainCanvas">
-        
-    </Canvas>
 </Window>
