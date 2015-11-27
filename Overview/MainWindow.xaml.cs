@@ -93,7 +93,7 @@ namespace Overview
             GD.bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
             GD.bt_Exit.MouseLeftButtonDown += ExitButton_MouseDown;
             Canvas.SetTop(GD.bt_Exit, (5));
-            Canvas.SetRight(GD.bt_Exit, (6));
+            Canvas.SetRight(GD.bt_Exit, (5));
             GD.MainCanvas.Children.Add(GD.bt_Exit);
 
             // CPU Usage
