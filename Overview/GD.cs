@@ -22,7 +22,7 @@ using System.Windows.Threading;
 namespace Overview
 {
     // ===============================
-    // Global Data Class
+    // Global Data class
     // ===============================
     public static class GD
     {
@@ -34,6 +34,8 @@ namespace Overview
             // - Constants
             public const int WINDOW_WIDTH = 150;
             public const int WINDOW_HEIGHT = 400;
+            public const int CPUGRAPH_WIDTH = 140;
+            public const int CPUGRAPH_HEIGHT = 40;
             // - Variables
             public static int coreNumber = 0;
 

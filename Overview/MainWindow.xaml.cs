@@ -28,10 +28,7 @@ namespace Overview
         private bool isDragMovable = true;
         private bool isClosing = false;
         private int tickCounter = 4;
-        private double xmax = 140;
-        private double ymax = 40;
-        private double step = 10;
-        private double graphStep = 2;
+        private double graphStep = GD.CPUGRAPH_WIDTH / 70;
 
         // Handle Recuperation Tools
         [DllImport("user32.dll")]
@@ -110,78 +107,8 @@ namespace Overview
             // Build the Processor Manager
             ProcessorManager PM = new ProcessorManager();
 
-            //
-            // --- GRAPH STUFF ---
-            //
-
-            int CPUGraphTopSpacing = GD.coreNumber * 15 + 70;
-
-            GD.GraphCanvasCPU.Width = 140;
-            GD.GraphCanvasCPU.Height = 40;
-            GD.GraphCanvasCPU.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
-
-            Canvas.SetTop(GD.GraphCanvasCPU, (CPUGraphTopSpacing));
-            Canvas.SetLeft(GD.GraphCanvasCPU, (5));
-            GD.MainCanvas.Children.Add(GD.GraphCanvasCPU);
-
-            Border BorderCPUGraphCanvas2 = new Border();
-            BorderCPUGraphCanvas2.Width = GD.GraphCanvasCPU.Width + 10;
-            BorderCPUGraphCanvas2.Height = GD.GraphCanvasCPU.Height + 10;
-            BorderCPUGraphCanvas2.BorderThickness = new Thickness(4);
-            BorderCPUGraphCanvas2.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
-            Canvas.SetTop(BorderCPUGraphCanvas2, (CPUGraphTopSpacing - 5));
-            Canvas.SetLeft(BorderCPUGraphCanvas2, (0));
-            GD.MainCanvas.Children.Add(BorderCPUGraphCanvas2);
-
-            Border BorderCPUGraphCanvas = new Border();
-            BorderCPUGraphCanvas.Width = GD.GraphCanvasCPU.Width + 2;
-            BorderCPUGraphCanvas.Height = GD.GraphCanvasCPU.Height + 2;
-            BorderCPUGraphCanvas.BorderThickness = new Thickness(1);
-            BorderCPUGraphCanvas.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x55, 0x55, 0x55));
-            Canvas.SetTop(BorderCPUGraphCanvas, (CPUGraphTopSpacing - 1));
-            Canvas.SetLeft(BorderCPUGraphCanvas, (4));
-            GD.MainCanvas.Children.Add(BorderCPUGraphCanvas);
-
-            // Make the X axis.
-            GeometryGroup xaxis_geom = new GeometryGroup();
-            for (double x = 0 + step;
-                x <= GD.GraphCanvasCPU.Width - step; x += step)
-            {
-                xaxis_geom.Children.Add(new LineGeometry(
-                    new Point(x, 0),
-                    new Point(x, ymax)));
-            }
-
-            Path xaxis_path = new Path();
-            xaxis_path.StrokeThickness = 1;
-            xaxis_path.Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
-            xaxis_path.Data = xaxis_geom;
-            xaxis_path.SnapsToDevicePixels = true;
-            xaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
-
-            GD.GraphCanvasCPU.Children.Add(xaxis_path);
-
-            // Make the Y ayis.
-            GeometryGroup yaxis_geom = new GeometryGroup();
-            for (double y = step; y <= GD.GraphCanvasCPU.Height - step; y += step)
-            {
-                yaxis_geom.Children.Add(new LineGeometry(
-                    new Point(0, y),
-                    new Point(xmax, y)));
-            }
-
-            Path yaxis_path = new Path();
-            yaxis_path.StrokeThickness = 1;
-            yaxis_path.Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
-            yaxis_path.Data = yaxis_geom;
-            yaxis_path.SnapsToDevicePixels = true;
-            yaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
-
-            GD.GraphCanvasCPU.Children.Add(yaxis_path);
-
-            //
-            // --- END OF GRAPH STUFF ---
-            //
+            // Build the CPU Graph
+            GraphManager CPUGraph = new GraphManager(GD.coreNumber * 15 + 70, GD.CPUGRAPH_WIDTH, GD.CPUGRAPH_HEIGHT);
         }
 
         // Timer
@@ -235,7 +162,7 @@ namespace Overview
                 for (short cpuNumber = 0; cpuNumber < GD.coreNumber; cpuNumber++)
                 {
                     PointCollection points = new PointCollection();
-                    double x = xmax;
+                    double x = GD.CPUGRAPH_WIDTH;
                     for (int DataIndex = 0; DataIndex < 72; DataIndex++)
                     {
                         double rawYValue = GD.CoreData[cpuNumber][DataIndex];
