@@ -28,6 +28,7 @@ namespace Overview
         private bool isDragMovable = true;
         private bool isClosing = false;
         private int tickCounter = 4;
+        private int closeTickCount = 0;
         private double graphStep = GD.CPUGRAPH_WIDTH / 70;
 
         // Handle Recuperation Tools
@@ -87,14 +88,13 @@ namespace Overview
             GD.MainCanvas.Children.Add(bt_Lock);
 
             // Exit button
-            Rectangle bt_Exit = new Rectangle();
-            bt_Exit.Width = 14;
-            bt_Exit.Height = 14;
-            bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
-            bt_Exit.MouseLeftButtonDown += ExitButton_MouseDown;
-            Canvas.SetTop(bt_Exit, (5));
-            Canvas.SetRight(bt_Exit, (6));
-            GD.MainCanvas.Children.Add(bt_Exit);
+            GD.bt_Exit.Width = 14;
+            GD.bt_Exit.Height = 14;
+            GD.bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
+            GD.bt_Exit.MouseLeftButtonDown += ExitButton_MouseDown;
+            Canvas.SetTop(GD.bt_Exit, (5));
+            Canvas.SetRight(GD.bt_Exit, (6));
+            GD.MainCanvas.Children.Add(GD.bt_Exit);
 
             // CPU Usage
             GD.tbArrayCPU[0] = new TextBlock();
@@ -126,6 +126,20 @@ namespace Overview
             if (WindowState != WindowState.Normal)
             {
                 WindowState = WindowState.Normal;
+            }
+
+            if (isClosing == true)
+            {
+                if (isClosing == true && closeTickCount > 10)
+                {
+                    isClosing = false;
+                    GD.bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini.png")));
+                    closeTickCount = 0;
+                }
+                else
+                {
+                    closeTickCount++;
+                }
             }
 
             tickCounter++;
@@ -195,18 +209,17 @@ namespace Overview
             bt_Lock.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/lock" + (isDragMovable == true ? "open" : "closed") + "_mini.png")));
         }
 
-        // Test
+        // Exit
         public void ExitButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            isClosing = true;
-            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Exit Confirmation", MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
+            if (isClosing == true)
             {
                 Application.Current.Shutdown();
             }
             else
             {
-                isClosing = false;
+                isClosing = true;
+                GD.bt_Exit.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/exit_mini2.png")));
             }
         }
 

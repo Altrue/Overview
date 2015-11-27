@@ -92,10 +92,6 @@ namespace Overview
             yaxis_path.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
 
             GD.GraphCanvasCPU.Children.Add(yaxis_path);
-
-            //
-            // --- END OF GRAPH STUFF ---
-            //
         }
     }
 }

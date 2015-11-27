@@ -45,10 +45,12 @@ namespace Overview
             public static Canvas MainCanvas = new Canvas();
             // - Brushes
             public static Brush[] brushes = { Brushes.IndianRed, Brushes.OrangeRed, Brushes.Gold, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink, Brushes.Pink, Brushes.Purple, Brushes.DarkRed, Brushes.DarkOrange, Brushes.DarkGoldenrod, Brushes.DarkGreen, Brushes.DarkSlateBlue, Brushes.DarkSeaGreen };
+            // - Buttons
+            public static Rectangle bt_Exit = new Rectangle();
 
         // Data Storage
-            // - Dictionaries
-            public static Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
+        // - Dictionaries
+        public static Dictionary<Int16, List<int>> CoreData = new Dictionary<Int16, List<int>>();
             public static Dictionary<Int16, Polyline> CPUPolyLines = new Dictionary<Int16, Polyline>();
             // - Arrays
             public static PerformanceCounter[] pcArrayCPU = new PerformanceCounter[17];
