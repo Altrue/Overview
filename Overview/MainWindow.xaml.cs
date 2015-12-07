@@ -56,6 +56,7 @@ namespace Overview
             ResizeMode = ResizeMode.CanMinimize;
             WindowStyle = WindowStyle.None;
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
+            ShowInTaskbar = false;
 
             // Event assignation
             MouseLeftButtonDown += MainWindow_MouseDown;
