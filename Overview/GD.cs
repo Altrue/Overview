@@ -44,7 +44,24 @@ namespace Overview
             public static Canvas GraphCanvasCPU = new Canvas();
             public static Canvas MainCanvas = new Canvas();
             // - Brushes
-            public static Brush[] brushes = { Brushes.IndianRed, Brushes.OrangeRed, Brushes.Gold, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink, Brushes.Pink, Brushes.Purple, Brushes.DarkRed, Brushes.DarkOrange, Brushes.DarkGoldenrod, Brushes.DarkGreen, Brushes.DarkSlateBlue, Brushes.DarkSeaGreen };
+            public static Brush[] brushes = {   new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x50, 0x50)),
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x50, 0x50)), // red
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x8A, 0x50)), // orange
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xCC, 0x50)), // gold
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0x72, 0xD4, 0x48)), // green
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0x2A, 0xAE, 0x52)), // deeper green
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0x19, 0xAB, 0x8A)), // greenish cyan
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0x48, 0x9D, 0xDE)), // blue
+                                                new SolidColorBrush(Color.FromArgb(0xFF, 0x5D, 0x70, 0xE3)), // violetish blue
+                                                Brushes.LightPink,
+                                                Brushes.Pink,
+                                                Brushes.Purple,
+                                                Brushes.DarkRed,
+                                                Brushes.DarkOrange,
+                                                Brushes.DarkGoldenrod,
+                                                Brushes.DarkGreen,
+                                                Brushes.DarkSlateBlue,
+                                                Brushes.DarkSeaGreen };
             // - Buttons
             public static Rectangle bt_Exit = new Rectangle();
             

@@ -87,9 +87,9 @@ namespace Overview
                     GD.borderCPU[instanceNumber].BorderThickness = new Thickness(1);
                     GD.borderCPU[instanceNumber].BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
                     GD.borderCPU[instanceNumber].Height = 12;
-                    GD.borderCPU[instanceNumber].Width = GD.WINDOW_WIDTH/2 - 5;
+                    GD.borderCPU[instanceNumber].Width = GD.WINDOW_WIDTH/2 - 4;
                     Canvas.SetTop(GD.borderCPU[instanceNumber], (52 + instanceNumber * 15));
-                    Canvas.SetRight(GD.borderCPU[instanceNumber], (5));
+                    Canvas.SetRight(GD.borderCPU[instanceNumber], (4));
                     GD.MainCanvas.Children.Add(GD.borderCPU[instanceNumber]);
 
                     GD.rectCPU[instanceNumber] = new Rectangle();

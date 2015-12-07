@@ -74,7 +74,7 @@ namespace Overview
             bt_logo.Width = 91;
             bt_logo.Height = 13;
             bt_logo.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/ressources/overviewlogo_mini.png")));
-            Canvas.SetTop(bt_logo, (12));
+            Canvas.SetTop(bt_logo, (8));
             Canvas.SetLeft(bt_logo, (30));
             GD.MainCanvas.Children.Add(bt_logo);
 
@@ -83,7 +83,7 @@ namespace Overview
             tb_head.Text = "";
             tb_head.Foreground = new SolidColorBrush(Colors.Gray);
             tb_head.FontSize = 10;
-            Canvas.SetTop(tb_head, (25));
+            Canvas.SetTop(tb_head, (23));
             Canvas.SetLeft(tb_head, (7));
             GD.MainCanvas.Children.Add(tb_head);
 
@@ -91,7 +91,7 @@ namespace Overview
             tb_head2.Text = "";
             tb_head2.Foreground = new SolidColorBrush(Colors.Gray);
             tb_head2.FontSize = 10;
-            Canvas.SetTop(tb_head2, (37));
+            Canvas.SetTop(tb_head2, (35));
             Canvas.SetLeft(tb_head2, (7));
             GD.MainCanvas.Children.Add(tb_head2);
 
@@ -109,7 +109,7 @@ namespace Overview
                 foreach (string word in words)
                 {
                     int wLength = word.Length;
-                    if (tb1Length + wLength < 20)
+                    if (tb1Length + wLength < 27)
                     {
                         tb1Text += (tb1Length == 0 ? word : (" " + word));
                         tb1Length = tb1Text.Length;
@@ -153,7 +153,7 @@ namespace Overview
 
             // CPU Total bars
             GD.rectCPU[0] = new Rectangle();
-            GD.rectCPU[0].Fill = new SolidColorBrush(Colors.Cyan);
+            GD.rectCPU[0].Fill = new SolidColorBrush(Colors.White);
             GD.rectCPU[0].Height = 10;
             GD.rectCPU[0].Width = 0;
             Canvas.SetTop(GD.rectCPU[0], (53));
@@ -165,18 +165,18 @@ namespace Overview
             GD.borderCPU[0].BorderThickness = new Thickness(1);
             GD.borderCPU[0].BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
             GD.borderCPU[0].Height = 12;
-            GD.borderCPU[0].Width = GD.WINDOW_WIDTH/2 - 5;
+            GD.borderCPU[0].Width = GD.WINDOW_WIDTH/2 - 4;
             Canvas.SetTop(GD.borderCPU[0], (52));
-            Canvas.SetRight(GD.borderCPU[0], (5));
+            Canvas.SetRight(GD.borderCPU[0], (4));
             GD.MainCanvas.Children.Add(GD.borderCPU[0]);
 
             // Build the Processor Manager
             ProcessorManager PM = new ProcessorManager();
 
-            Height = GD.coreNumber * 15 + 113;
+            Height = GD.coreNumber * 15 + 115;
 
             // Build the CPU Graph
-            GraphManager CPUGraph = new GraphManager(GD.coreNumber * 15 + 68, GD.CPUGRAPH_WIDTH, GD.CPUGRAPH_HEIGHT);
+            GraphManager CPUGraph = new GraphManager(GD.coreNumber * 15 + 70, GD.CPUGRAPH_WIDTH, GD.CPUGRAPH_HEIGHT);
         }
 
         // Timer
@@ -225,7 +225,14 @@ namespace Overview
                             int _nextvalue = (int)Math.Truncate(_pc.NextValue());
                             int _instancename = tbArrayNumber - 1;
                             int listCount = GD.CoreData[shorttbArrayNumber].Count();
-                            GD.tbArrayCPU[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
+                            if (_nextvalue == 100)
+                            {
+                                GD.tbArrayCPU[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + "%";
+                            }
+                            else
+                            {
+                                GD.tbArrayCPU[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
+                            }
 
                             GD.rectCPU[tbArrayNumber].Width = Math.Truncate((GD.WINDOW_WIDTH/2 - 6) * ((double)_nextvalue/100));
                             GD.MainCanvas.Children.Remove(GD.rectCPU[tbArrayNumber]);
@@ -242,7 +249,21 @@ namespace Overview
                             int _nextvalue = (int)Math.Truncate(_pc.NextValue());
                             GD.tbArrayCPU[0].Text = "Total : " + _nextvalue + "%";
 
-                            GD.rectCPU[0].Width = Math.Truncate((GD.WINDOW_WIDTH - 7) * ((double)_nextvalue / 100));
+                            GD.rectCPU[0].Width = Math.Truncate((GD.WINDOW_WIDTH/2 - 6) * ((double)_nextvalue / 100));
+
+                            if (_nextvalue > 85)
+                            {
+                                GD.rectCPU[0].Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0xCC, 0x00, 0x00));
+                            }
+                            else if (_nextvalue > 70)
+                            {
+                                GD.rectCPU[0].Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0xDD, 0xE4, 0x68));
+                            }
+                            else
+                            {
+                                GD.rectCPU[0].Fill = new SolidColorBrush(Color.FromArgb(0xFF, 0x83, 0xFF, 0xFB));
+                            }
+                            
                             GD.MainCanvas.Children.Remove(GD.rectCPU[0]);
                             GD.MainCanvas.Children.Add(GD.rectCPU[0]);
                         }
