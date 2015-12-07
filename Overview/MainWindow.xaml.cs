@@ -96,13 +96,32 @@ namespace Overview
             Canvas.SetRight(GD.bt_Exit, (5));
             GD.MainCanvas.Children.Add(GD.bt_Exit);
 
-            // CPU Usage
+            // CPU Total
             GD.tbArrayCPU[0] = new TextBlock();
             GD.tbArrayCPU[0].Text = "?";
             GD.tbArrayCPU[0].Foreground = new SolidColorBrush(Colors.White);
             Canvas.SetTop(GD.tbArrayCPU[0], (50));
-            Canvas.SetLeft(GD.tbArrayCPU[0], (5));
+            Canvas.SetLeft(GD.tbArrayCPU[0], (7));
             GD.MainCanvas.Children.Add(GD.tbArrayCPU[0]);
+
+            // CPU Total bars
+            GD.rectCPU[0] = new Rectangle();
+            GD.rectCPU[0].Fill = new SolidColorBrush(Colors.Cyan);
+            GD.rectCPU[0].Height = 10;
+            GD.rectCPU[0].Width = 0;
+            Canvas.SetTop(GD.rectCPU[0], (53));
+            Canvas.SetLeft(GD.rectCPU[0], (GD.WINDOW_WIDTH / 2 + 1));
+            GD.MainCanvas.Children.Add(GD.rectCPU[0]);
+
+            GD.borderCPU[0] = new Border();
+            GD.borderCPU[0].Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
+            GD.borderCPU[0].BorderThickness = new Thickness(1);
+            GD.borderCPU[0].BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+            GD.borderCPU[0].Height = 12;
+            GD.borderCPU[0].Width = GD.WINDOW_WIDTH/2 - 5;
+            Canvas.SetTop(GD.borderCPU[0], (52));
+            Canvas.SetRight(GD.borderCPU[0], (5));
+            GD.MainCanvas.Children.Add(GD.borderCPU[0]);
 
             // Build the Processor Manager
             ProcessorManager PM = new ProcessorManager();
@@ -159,6 +178,13 @@ namespace Overview
                             int listCount = GD.CoreData[shorttbArrayNumber].Count();
                             GD.tbArrayCPU[tbArrayNumber].Text = "Core " + _instancename + " : " + _nextvalue + " %";
 
+                            GD.rectCPU[tbArrayNumber].Width = Math.Truncate((GD.WINDOW_WIDTH/2 - 6) * ((double)_nextvalue/100));
+                            GD.MainCanvas.Children.Remove(GD.rectCPU[tbArrayNumber]);
+                            GD.MainCanvas.Children.Add(GD.rectCPU[tbArrayNumber]);
+
+                            // Hack to bring to front...
+                            GD.MainCanvas.Children.Remove(GD.tbArrayCPU[tbArrayNumber]);
+                            GD.MainCanvas.Children.Add(GD.tbArrayCPU[tbArrayNumber]);
                             GD.CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
                             if (listCount > 71)
                             {
@@ -167,7 +193,16 @@ namespace Overview
                         }
                         else
                         {
-                            GD.tbArrayCPU[0].Text = "Total : " + Math.Truncate(GD.pcArrayCPU[0].NextValue()) + "%";
+                            int _nextvalue = (int)Math.Truncate(_pc.NextValue());
+                            GD.tbArrayCPU[0].Text = "Total : " + _nextvalue + "%";
+
+                            GD.rectCPU[0].Width = Math.Truncate((GD.WINDOW_WIDTH - 7) * ((double)_nextvalue / 100));
+                            GD.MainCanvas.Children.Remove(GD.rectCPU[0]);
+                            GD.MainCanvas.Children.Add(GD.rectCPU[0]);
+
+                            // Hack to bring to front...
+                            GD.MainCanvas.Children.Remove(GD.tbArrayCPU[0]);
+                            GD.MainCanvas.Children.Add(GD.tbArrayCPU[0]);
                         }
                     }
                 }

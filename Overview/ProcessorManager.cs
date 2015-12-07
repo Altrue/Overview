@@ -82,12 +82,30 @@ namespace Overview
                         GD.CoreData[instanceNumber2].Add(-1);
                     }
 
+                    GD.borderCPU[instanceNumber] = new Border();
+                    GD.borderCPU[instanceNumber].Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x11, 0x11, 0x11));
+                    GD.borderCPU[instanceNumber].BorderThickness = new Thickness(1);
+                    GD.borderCPU[instanceNumber].BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+                    GD.borderCPU[instanceNumber].Height = 12;
+                    GD.borderCPU[instanceNumber].Width = GD.WINDOW_WIDTH/2 - 5;
+                    Canvas.SetTop(GD.borderCPU[instanceNumber], (52 + instanceNumber * 15));
+                    Canvas.SetRight(GD.borderCPU[instanceNumber], (5));
+                    GD.MainCanvas.Children.Add(GD.borderCPU[instanceNumber]);
+
+                    GD.rectCPU[instanceNumber] = new Rectangle();
+                    GD.rectCPU[instanceNumber].Fill = GD.brushes[instanceNumber];
+                    GD.rectCPU[instanceNumber].Height = 10;
+                    GD.rectCPU[instanceNumber].Width = 0;
+                    Canvas.SetTop(GD.rectCPU[instanceNumber], (53 + instanceNumber * 15));
+                    Canvas.SetLeft(GD.rectCPU[instanceNumber], (GD.WINDOW_WIDTH/2 + 1));
+                    GD.MainCanvas.Children.Add(GD.rectCPU[instanceNumber]);
+
                     GD.pcArrayCPU[instanceNumber] = new PerformanceCounter("Processor", "% Processor Time", s);
                     GD.tbArrayCPU[instanceNumber] = new TextBlock();
                     GD.tbArrayCPU[instanceNumber].Text = "?";
                     GD.tbArrayCPU[instanceNumber].Foreground = new SolidColorBrush(Colors.White);
                     Canvas.SetTop(GD.tbArrayCPU[instanceNumber], (50 + instanceNumber * 15));
-                    Canvas.SetLeft(GD.tbArrayCPU[instanceNumber], (5));
+                    Canvas.SetLeft(GD.tbArrayCPU[instanceNumber], (7));
                     GD.MainCanvas.Children.Add(GD.tbArrayCPU[instanceNumber]);
                 }
             }

@@ -47,6 +47,7 @@ namespace Overview
             public static Brush[] brushes = { Brushes.IndianRed, Brushes.OrangeRed, Brushes.Gold, Brushes.LightGreen, Brushes.LightCyan, Brushes.LightBlue, Brushes.LightSteelBlue, Brushes.GhostWhite, Brushes.LightPink, Brushes.Pink, Brushes.Purple, Brushes.DarkRed, Brushes.DarkOrange, Brushes.DarkGoldenrod, Brushes.DarkGreen, Brushes.DarkSlateBlue, Brushes.DarkSeaGreen };
             // - Buttons
             public static Rectangle bt_Exit = new Rectangle();
+            
 
         // Data Storage
         // - Dictionaries
@@ -55,5 +56,7 @@ namespace Overview
             // - Arrays
             public static PerformanceCounter[] pcArrayCPU = new PerformanceCounter[17];
             public static TextBlock[] tbArrayCPU = new TextBlock[32];
+            public static Rectangle[] rectCPU = new Rectangle[32];
+            public static Border[] borderCPU = new Border[32];
     }
 }
