@@ -78,6 +78,52 @@ namespace Overview
             Canvas.SetLeft(bt_logo, (30));
             GD.MainCanvas.Children.Add(bt_logo);
 
+            // Head Text
+            TextBlock tb_head = new TextBlock();
+            tb_head.Text = "";
+            tb_head.Foreground = new SolidColorBrush(Colors.Gray);
+            tb_head.FontSize = 10;
+            Canvas.SetTop(tb_head, (25));
+            Canvas.SetLeft(tb_head, (7));
+            GD.MainCanvas.Children.Add(tb_head);
+
+            TextBlock tb_head2 = new TextBlock();
+            tb_head2.Text = "";
+            tb_head2.Foreground = new SolidColorBrush(Colors.Gray);
+            tb_head2.FontSize = 10;
+            Canvas.SetTop(tb_head2, (37));
+            Canvas.SetLeft(tb_head2, (7));
+            GD.MainCanvas.Children.Add(tb_head2);
+
+            // TEST
+            ManagementObjectSearcher mos =
+                new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+            foreach (ManagementObject mo in mos.Get())
+            {
+                string nameFull = (string)mo["Name"];
+                string[] words = nameFull.Split(' ');
+                string tb1Text = "";
+                string tb2Text = "";
+                //int wordCount = words.Count();
+                int tb1Length = 0;
+                foreach (string word in words)
+                {
+                    int wLength = word.Length;
+                    if (tb1Length + wLength < 20)
+                    {
+                        tb1Text += (tb1Length == 0 ? word : (" " + word));
+                        tb1Length = tb1Text.Length;
+                    }
+                    else
+                    {
+                        tb2Text += (tb2Text.Length == 0 ? word : (" " + word)); ;
+                    }
+                }
+
+                tb_head.Text = tb1Text;
+                tb_head2.Text = tb2Text;
+            }
+
             // Lock button
             Rectangle bt_Lock = new Rectangle();
             bt_Lock.Width = 14;
