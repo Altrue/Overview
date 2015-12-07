@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
@@ -56,7 +58,8 @@ namespace Overview
             ResizeMode = ResizeMode.CanMinimize;
             WindowStyle = WindowStyle.None;
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22));
-            ShowInTaskbar = false;
+            Icon = new BitmapImage(new Uri("pack://application:,,,/ressources/icon.ico"));
+            //ShowInTaskbar = false;
 
             // Event assignation
             MouseLeftButtonDown += MainWindow_MouseDown;
@@ -68,6 +71,14 @@ namespace Overview
             GD.MainCanvas.Height = GD.WINDOW_HEIGHT;
             GD.MainCanvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             GD.MainCanvas.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+
+            // TB ICON
+            /*
+            TaskbarIcon tbi = new TaskbarIcon();
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/ressources/icon.ico")).Stream;
+            tbi.Icon = new System.Drawing.Icon(iconStream);
+            iconStream.Dispose();
+            tbi.ToolTipText = "Overview is Running";*/
 
             // Logo
             Rectangle bt_logo = new Rectangle();
@@ -95,17 +106,18 @@ namespace Overview
             Canvas.SetLeft(tb_head2, (7));
             GD.MainCanvas.Children.Add(tb_head2);
 
-            // TEST
+            // Head Text Fill
             ManagementObjectSearcher mos =
                 new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
             foreach (ManagementObject mo in mos.Get())
             {
                 string nameFull = (string)mo["Name"];
                 string[] words = nameFull.Split(' ');
+
                 string tb1Text = "";
                 string tb2Text = "";
-                //int wordCount = words.Count();
                 int tb1Length = 0;
+
                 foreach (string word in words)
                 {
                     int wLength = word.Length;
