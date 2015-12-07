@@ -33,7 +33,7 @@ namespace Overview
         // Constants & Variables
             // - Constants
             public const int WINDOW_WIDTH = 150;
-            public const int WINDOW_HEIGHT = 400;
+            public const int WINDOW_HEIGHT = 52;
             public const int CPUGRAPH_WIDTH = 140;
             public const int CPUGRAPH_HEIGHT = 40;
             // - Variables

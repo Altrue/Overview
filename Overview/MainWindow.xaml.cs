@@ -173,8 +173,10 @@ namespace Overview
             // Build the Processor Manager
             ProcessorManager PM = new ProcessorManager();
 
+            Height = GD.coreNumber * 15 + 113;
+
             // Build the CPU Graph
-            GraphManager CPUGraph = new GraphManager(GD.coreNumber * 15 + 70, GD.CPUGRAPH_WIDTH, GD.CPUGRAPH_HEIGHT);
+            GraphManager CPUGraph = new GraphManager(GD.coreNumber * 15 + 68, GD.CPUGRAPH_WIDTH, GD.CPUGRAPH_HEIGHT);
         }
 
         // Timer
