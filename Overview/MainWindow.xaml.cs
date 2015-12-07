@@ -182,9 +182,6 @@ namespace Overview
                             GD.MainCanvas.Children.Remove(GD.rectCPU[tbArrayNumber]);
                             GD.MainCanvas.Children.Add(GD.rectCPU[tbArrayNumber]);
 
-                            // Hack to bring to front...
-                            GD.MainCanvas.Children.Remove(GD.tbArrayCPU[tbArrayNumber]);
-                            GD.MainCanvas.Children.Add(GD.tbArrayCPU[tbArrayNumber]);
                             GD.CoreData[shorttbArrayNumber].Insert(0, _nextvalue);
                             if (listCount > 71)
                             {
@@ -199,10 +196,6 @@ namespace Overview
                             GD.rectCPU[0].Width = Math.Truncate((GD.WINDOW_WIDTH - 7) * ((double)_nextvalue / 100));
                             GD.MainCanvas.Children.Remove(GD.rectCPU[0]);
                             GD.MainCanvas.Children.Add(GD.rectCPU[0]);
-
-                            // Hack to bring to front...
-                            GD.MainCanvas.Children.Remove(GD.tbArrayCPU[0]);
-                            GD.MainCanvas.Children.Add(GD.tbArrayCPU[0]);
                         }
                     }
                 }
